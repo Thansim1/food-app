@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout - KN BITES</title>
+  <link rel="stylesheet" href="style.css"/>
+  <div class="stars"></div>
+</head>
+<body>
+    <canvas id="background-canvas"></canvas>
+  <header><h1>KN BITES</h1></header>
+  <main class="form-container">
+    <h2>Checkout</h2>
+    <form id="checkoutForm">
+      <label>Name: <input type="text" name="name" required></label>
+      <label>Address: <input type="text" name="address" required></label>
+      <label>Payment Mode:
+        <select name="payment" required>
+          <option value="">Select</option>
+          <option value="UPI">UPI</option>
+          <option value="Cash">Cash</option>
+          <option value="Card">Card</option>
+        </select>
+      </label>
+      <button class="btn" type="submit">Place Order</button>
+    </form>
+  </main>
+  <script>
+    const canvas = document.getElementById('background-canvas');
+    const ctx = canvas.getContext('2d');
+  
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+  
+    const particles = [];
+    const maxParticles = 100;
+  
+    for (let i = 0; i < maxParticles; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 1,
+        vy: (Math.random() - 0.5) * 1,
+        radius: 1.5
+      });
+    }
+  
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+      for (let i = 0; i < maxParticles; i++) {
+        let p = particles[i];
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#f5e5b8';
+        ctx.fill();
+  
+        // Move particles
+        p.x += p.vx;
+        p.y += p.vy;
+  
+        if (p.x < 0 || p.x > width) p.vx *= -1;
+        if (p.y < 0 || p.y > height) p.vy *= -1;
+  
+        // Connect lines
+        for (let j = i + 1; j < maxParticles; j++) {
+          let q = particles[j];
+          let dx = p.x - q.x;
+          let dy = p.y - q.y;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 100) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(q.x, q.y);
+            ctx.strokeStyle = 'rgba(245, 229, 184, 0.1)';
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+  
+    draw();
+  
+    // Handle resize
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+  </script>
+
+</body>
+</html>
